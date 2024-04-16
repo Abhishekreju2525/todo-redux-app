@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
-import { addTask, deleteTask } from "./store/todoSlice";
+import { addTask, deleteTask, changeStatus } from "./store/todoSlice";
 import { useForm } from "react-hook-form";
+import TodoItem from "./TodoItem";
 
 function App() {
   const data = useSelector((state) => state.todo);
   const dispatch = useDispatch();
-  console.log(data);
+  // console.log(data);
   const {
     register,
     handleSubmit,
@@ -16,14 +17,14 @@ function App() {
   function handleAddTodo(data) {
     data.status = false;
     dispatch(addTask(data));
-    
 
     console.log(data);
     reset();
   }
+
   return (
     <div className="App">
-      <div className="w-[80%]">
+      <div className="w-[80%] mx-auto">
         <form
           action=""
           onSubmit={handleSubmit(handleAddTodo)}
@@ -45,35 +46,21 @@ function App() {
             </div>
           </div>
         </form>
+
+      
+        <div className="TaskContainer">
+          <h2 className="text-3xl ">Active tasks</h2>
+          <hr style={{ width: "70px" }} /> <br />
+          {data.todo.length > 0 ? (
+            data.todo.map((todo, index) => {
+              return <TodoItem Item={todo} key={todo.todoItem} index={index} />;
+            })
+          ) : (
+            <p className="text-gray-700 text-md">No tasks found.</p>
+          )}
+        </div>
       </div>
-      <div>
-        {/* <input type="text" onChange={handleChange} /> */}
-        <button
-          onClick={() => {
-            dispatch(addTask("new task"));
-          }}
-          className="p-2"
-        >
-          Add
-        </button>
-      </div>
-      <div>
-        {data.todo.map((item, index) => {
-          return (
-            <div className="flex gap-2 p-5">
-              {item.todoItem}{" "}
-              <button
-                onClick={() => {
-                  dispatch(deleteTask(index));
-                }}
-                className="p-2 bg-red-500"
-              >
-                Delete
-              </button>{" "}
-            </div>
-          );
-        })}
-      </div>
+     
     </div>
   );
 }
